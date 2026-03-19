@@ -36,6 +36,14 @@ describe('buildWifiString', () => {
     expect(buildWifiString({ ssid: '   ', password: '', security: 'WPA', hidden: false })).toBe('');
   });
 
+  it('returns empty string for WPA network with no password', () => {
+    expect(buildWifiString({ ssid: 'MyNet', password: '', security: 'WPA', hidden: false })).toBe('');
+  });
+
+  it('returns empty string for WEP network with no password', () => {
+    expect(buildWifiString({ ssid: 'MyNet', password: '   ', security: 'WEP', hidden: false })).toBe('');
+  });
+
   it('builds WPA string correctly', () => {
     const result = buildWifiString({
       ssid: 'MyNetwork',

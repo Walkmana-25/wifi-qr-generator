@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import type { WifiConfig, SecurityType } from '../types';
 import { buildWifiString, generateWifiQrDataUrl } from '../utils/wifiQr';
 import QrDisplay from './QrDisplay';
@@ -8,6 +8,12 @@ const SECURITY_OPTIONS: { value: SecurityType; label: string }[] = [
   { value: 'WEP', label: 'WEP' },
   { value: 'nopass', label: 'オープン (パスワードなし)' },
 ];
+
+/** Sanitizes a string for safe use as a filename across OS platforms. */
+function sanitizeFilename(name: string): string {
+  // eslint-disable-next-line no-control-regex
+  return name.trim().replace(/[\\/:*?"<>|\x00-\x1f]/g, '_') || 'qr';
+}
 
 export default function WifiForm() {
   const [config, setConfig] = useState<WifiConfig>({
@@ -21,6 +27,16 @@ export default function WifiForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [copied, setCopied] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copiedTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const requestIdRef = useRef(0);
+
+  // Cleanup all pending timers on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) clearTimeout(debounceRef.current);
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+    };
+  }, []);
 
   const updateConfig = useCallback(
     (partial: Partial<WifiConfig>) => {
@@ -28,17 +44,32 @@ export default function WifiForm() {
       setConfig(updated);
 
       if (debounceRef.current) clearTimeout(debounceRef.current);
+
+      // Clear QR immediately when input is incomplete
+      const wifiString = buildWifiString(updated);
+      if (!wifiString) {
+        setQrDataUrl('');
+        setIsGenerating(false);
+        return;
+      }
+
+      // Use a monotonically increasing request ID to discard stale async results
       debounceRef.current = setTimeout(async () => {
-        if (!updated.ssid.trim()) {
-          setQrDataUrl('');
-          return;
-        }
+        const reqId = ++requestIdRef.current;
         setIsGenerating(true);
         try {
           const url = await generateWifiQrDataUrl(updated);
-          setQrDataUrl(url);
+          if (reqId === requestIdRef.current) {
+            setQrDataUrl(url);
+          }
+        } catch {
+          if (reqId === requestIdRef.current) {
+            setQrDataUrl('');
+          }
         } finally {
-          setIsGenerating(false);
+          if (reqId === requestIdRef.current) {
+            setIsGenerating(false);
+          }
         }
       }, 300);
     },
@@ -48,16 +79,21 @@ export default function WifiForm() {
   const handleCopy = useCallback(async () => {
     const text = buildWifiString(config);
     if (!text) return;
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      if (copiedTimerRef.current) clearTimeout(copiedTimerRef.current);
+      copiedTimerRef.current = setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Clipboard access denied or unavailable — fail silently
+    }
   }, [config]);
 
   const handleDownload = useCallback(() => {
     if (!qrDataUrl) return;
     const a = document.createElement('a');
     a.href = qrDataUrl;
-    a.download = `wifi-${config.ssid || 'qr'}.png`;
+    a.download = `wifi-${sanitizeFilename(config.ssid)}.png`;
     a.click();
   }, [qrDataUrl, config.ssid]);
 
@@ -88,6 +124,7 @@ export default function WifiForm() {
               onChange={(e) => updateConfig({ ssid: e.target.value })}
               placeholder="例: MyHomeNetwork"
               autoComplete="off"
+              aria-required="true"
               className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600
                 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100
                 placeholder-gray-400 dark:placeholder-gray-500
@@ -129,6 +166,7 @@ export default function WifiForm() {
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
               >
                 パスワード
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <div className="relative">
                 <input
@@ -138,6 +176,7 @@ export default function WifiForm() {
                   onChange={(e) => updateConfig({ password: e.target.value })}
                   placeholder="Wi-Fiパスワード"
                   autoComplete="off"
+                  aria-required="true"
                   className="w-full px-4 py-2.5 pr-12 rounded-xl border border-gray-300 dark:border-gray-600
                     bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-gray-100
                     placeholder-gray-400 dark:placeholder-gray-500
@@ -185,14 +224,16 @@ export default function WifiForm() {
           </div>
         </div>
 
-        {/* Action buttons */}
+        {/* Action buttons — only shown when a valid QR exists, disabled while regenerating */}
         {qrDataUrl && (
           <div className="mt-6 flex gap-3 flex-wrap">
             <button
               onClick={handleCopy}
+              disabled={isGenerating}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
                 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300
-                hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                hover:bg-gray-200 dark:hover:bg-gray-700 transition
+                disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {copied ? (
                 <>
@@ -212,8 +253,10 @@ export default function WifiForm() {
             </button>
             <button
               onClick={handleDownload}
+              disabled={isGenerating}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
-                bg-blue-600 text-white hover:bg-blue-700 transition"
+                bg-blue-600 text-white hover:bg-blue-700 transition
+                disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />

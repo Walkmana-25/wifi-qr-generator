@@ -1,4 +1,4 @@
-.PHONY: install dev build preview lint test test-watch test-coverage clean help
+.PHONY: install dev build preview lint test test-watch test-coverage clean help setup
 
 # Default target
 help: ## Show this help message

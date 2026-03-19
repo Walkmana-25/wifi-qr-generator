@@ -20,6 +20,11 @@ export function buildWifiString(config: WifiConfig): string {
     return '';
   }
 
+  // Secured networks without a password produce an unusable QR code
+  if (security !== 'nopass' && !password.trim()) {
+    return '';
+  }
+
   const escapedSsid = escapeWifiString(ssid);
   const escapedPassword = security !== 'nopass' ? escapeWifiString(password) : '';
 
