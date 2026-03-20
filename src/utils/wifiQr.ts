@@ -110,7 +110,7 @@ export async function generateWifiQrDataUrl(config: WifiConfig): Promise<string>
   ctx.lineWidth = 2;
   ctx.lineCap = 'round';
 
-  const arcAngles = [Math.PI * 0.25, Math.PI * 0.75];
+  const arcAngles = [Math.PI * 1.25, Math.PI * 1.75];
   [radius * 0.25, radius * 0.55, radius * 0.85].forEach((r) => {
     ctx.beginPath();
     ctx.arc(centerX, centerY, r, arcAngles[0], arcAngles[1]);
