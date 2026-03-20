@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import WifiForm from './components/WifiForm';
 import { useTranslation } from 'react-i18next';
+import { GITHUB_ISSUES_URL } from './constants';
 
 function normalizeLanguage(lang: string): 'ja' | 'en' {
   return lang.startsWith('en') ? 'en' : 'ja';
@@ -83,6 +84,14 @@ function App() {
 
       {/* Footer */}
       <footer className="py-4 text-center text-xs text-gray-400 dark:text-gray-600">
+        <a
+          href={GITHUB_ISSUES_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center text-xs text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline underline-offset-2 mb-2"
+        >
+          {t('app.viewSourceOnGithub')}
+        </a>
         <p>{t('app.footer')}</p>
       </footer>
     </div>
