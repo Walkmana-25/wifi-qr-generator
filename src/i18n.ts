@@ -9,6 +9,7 @@ const resources = {
         subtitle: 'ネットワーク情報を入力してQRコードを生成 — 完全オフライン・デバイス上で処理',
         footer:
           'すべての処理はお使いのデバイス上で完結します。パスワードは外部に送信されません。',
+        viewSourceOnGithub: 'View Source On GitHub',
         languageLabel: '言語',
         languageJa: '日本語',
         languageEn: 'English',
@@ -46,6 +47,7 @@ const resources = {
         subtitle:
           'Enter network info to generate a QR code — fully offline, processed on your device',
         footer: 'Everything is processed on your device. Your password is never sent externally.',
+        viewSourceOnGithub: 'View Source On GitHub',
         languageLabel: 'Language',
         languageJa: '日本語',
         languageEn: 'English',
