@@ -274,9 +274,12 @@ describe('generateWifiQrDataUrl', () => {
         startAngle === Math.PI * 1.25 && endAngle === Math.PI * 1.75,
     );
     expect(wifiArcCalls).toHaveLength(3);
+    const qrSize = 200;
+    const expectedCenterX = qrSize / 2;
+    const expectedIconCenterY = qrSize / 2 + (qrSize * 0.11) * 0.2;
     wifiArcCalls.forEach((call) => {
-      expect(call.x).toBe(100);
-      expect(call.y).toBeCloseTo(104.4, 4);
+      expect(call.x).toBe(expectedCenterX);
+      expect(call.y).toBeCloseTo(expectedIconCenterY, 4);
     });
   });
 });
