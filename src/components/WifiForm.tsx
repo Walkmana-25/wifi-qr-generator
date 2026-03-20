@@ -38,6 +38,7 @@ export default function WifiForm() {
     (partial: Partial<WifiConfig>) => {
       const updated = { ...config, ...partial };
       setConfig(updated);
+      requestIdRef.current += 1;
 
       if (debounceRef.current) clearTimeout(debounceRef.current);
 
@@ -51,7 +52,7 @@ export default function WifiForm() {
 
       // Use a monotonically increasing request ID to discard stale async results
       debounceRef.current = setTimeout(async () => {
-        const reqId = ++requestIdRef.current;
+        const reqId = requestIdRef.current;
         setIsGenerating(true);
         try {
           const url = await generateWifiQrDataUrl(updated);

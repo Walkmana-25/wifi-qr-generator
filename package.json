@@ -2,13 +2,14 @@
   "name": "wifi-qr-generator",
   "private": true,
   "version": "0.0.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build && npm run ssg",
     "lint": "eslint .",
     "preview": "vite preview",
-    "ssg": "tsx --tsconfig tsconfig.app.json scripts/ssg.tsx",
+    "ssg": "tsx --tsconfig tsconfig.ssg.json scripts/ssg.tsx",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage"

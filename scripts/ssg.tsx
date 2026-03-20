@@ -16,6 +16,15 @@ const html = fs.readFileSync(indexPath, 'utf-8');
 const appHtml = renderToString(
   React.createElement(React.StrictMode, null, React.createElement(App))
 );
-const hydrated = html.replace('<div id="root"></div>', `<div id="root">${appHtml}</div>`);
+const rootPlaceholder = '<div id="root"></div>';
+
+if (!html.includes(rootPlaceholder)) {
+  throw new Error(
+    `Could not find root placeholder "${rootPlaceholder}" in ${indexPath}. ` +
+      'The built index.html markup may have changed; update scripts/ssg.tsx or the template accordingly.'
+  );
+}
+
+const hydrated = html.replace(rootPlaceholder, `<div id="root">${appHtml}</div>`);
 
 fs.writeFileSync(indexPath, hydrated, 'utf-8');
