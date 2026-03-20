@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import App from '../App';
+import { GITHUB_ISSUES_URL } from '../constants';
 import '../i18n';
 
 describe('App', () => {
@@ -8,10 +9,7 @@ describe('App', () => {
     render(<App />);
 
     const link = screen.getByRole('link', { name: 'View Source On GitHub' });
-    expect(link).toHaveAttribute(
-      'href',
-      'https://github.com/Walkmana-25/wifi-qr-generator/issues/new'
-    );
+    expect(link).toHaveAttribute('href', GITHUB_ISSUES_URL);
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
   });
