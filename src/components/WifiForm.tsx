@@ -89,7 +89,7 @@ export default function WifiForm() {
     if (!qrDataUrl) return;
     const a = document.createElement('a');
     a.href = qrDataUrl;
-    a.download = `wifi-${sanitizeFilename(config.ssid)}.png`;
+    a.download = `${sanitizeFilename(config.ssid)}.png`;
     a.click();
   }, [qrDataUrl, config.ssid]);
 
