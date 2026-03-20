@@ -25,7 +25,7 @@ export default function QrDisplay({ dataUrl, ssid, isGenerating }: QrDisplayProp
             <img
               src={dataUrl}
               alt={t('qr.imageAlt', { ssid })}
-              className="w-52 h-52"
+              className="w-52 h-auto"
             />
           </div>
           <p className="text-sm text-gray-500 dark:text-gray-400 text-center">
