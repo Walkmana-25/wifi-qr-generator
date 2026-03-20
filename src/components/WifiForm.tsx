@@ -1,13 +1,8 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { WifiConfig, SecurityType } from '../types';
 import { buildWifiString, generateWifiQrDataUrl } from '../utils/wifiQr';
 import QrDisplay from './QrDisplay';
-
-const SECURITY_OPTIONS: { value: SecurityType; label: string }[] = [
-  { value: 'WPA', label: 'WPA/WPA2/WPA3' },
-  { value: 'WEP', label: 'WEP' },
-  { value: 'nopass', label: 'オープン (パスワードなし)' },
-];
 
 /** Sanitizes a string for safe use as a filename across OS platforms. */
 function sanitizeFilename(name: string): string {
@@ -16,6 +11,7 @@ function sanitizeFilename(name: string): string {
 }
 
 export default function WifiForm() {
+  const { t } = useTranslation();
   const [config, setConfig] = useState<WifiConfig>({
     ssid: '',
     password: '',
@@ -98,13 +94,18 @@ export default function WifiForm() {
   }, [qrDataUrl, config.ssid]);
 
   const needsPassword = config.security !== 'nopass';
+  const securityOptions: { value: SecurityType; label: string }[] = [
+    { value: 'WPA', label: t('form.securityWpa') },
+    { value: 'WEP', label: t('form.securityWep') },
+    { value: 'nopass', label: t('form.securityOpen') },
+  ];
 
   return (
     <div className="flex flex-col lg:flex-row gap-8 w-full max-w-4xl mx-auto">
       {/* Form */}
       <div className="flex-1 bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
         <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">
-          ネットワーク情報を入力
+          {t('form.heading')}
         </h2>
 
         <div className="space-y-5">
@@ -114,7 +115,7 @@ export default function WifiForm() {
               htmlFor="ssid"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
             >
-              ネットワーク名 (SSID)
+              {t('form.ssidLabel')}
               <span className="text-red-500 ml-1">*</span>
             </label>
             <input
@@ -122,7 +123,7 @@ export default function WifiForm() {
               type="text"
               value={config.ssid}
               onChange={(e) => updateConfig({ ssid: e.target.value })}
-              placeholder="例: MyHomeNetwork"
+              placeholder={t('form.ssidPlaceholder')}
               autoComplete="off"
               aria-required="true"
               className="w-full px-4 py-2.5 rounded-xl border border-gray-300 dark:border-gray-600
@@ -139,7 +140,7 @@ export default function WifiForm() {
               htmlFor="security"
               className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
             >
-              セキュリティタイプ
+              {t('form.securityLabel')}
             </label>
             <select
               id="security"
@@ -150,7 +151,7 @@ export default function WifiForm() {
                 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
                 transition cursor-pointer"
             >
-              {SECURITY_OPTIONS.map((opt) => (
+              {securityOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
                   {opt.label}
                 </option>
@@ -165,7 +166,7 @@ export default function WifiForm() {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
               >
-                パスワード
+                {t('form.passwordLabel')}
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <div className="relative">
@@ -174,7 +175,7 @@ export default function WifiForm() {
                   type={showPassword ? 'text' : 'password'}
                   value={config.password}
                   onChange={(e) => updateConfig({ password: e.target.value })}
-                  placeholder="Wi-Fiパスワード"
+                  placeholder={t('form.passwordPlaceholder')}
                   autoComplete="off"
                   aria-required="true"
                   className="w-full px-4 py-2.5 pr-12 rounded-xl border border-gray-300 dark:border-gray-600
@@ -186,7 +187,7 @@ export default function WifiForm() {
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  aria-label={showPassword ? 'パスワードを隠す' : 'パスワードを表示'}
+                  aria-label={showPassword ? t('form.hidePassword') : t('form.showPassword')}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600
                     dark:hover:text-gray-200 transition"
                 >
@@ -219,7 +220,7 @@ export default function WifiForm() {
               htmlFor="hidden"
               className="text-sm font-medium text-gray-700 dark:text-gray-300 cursor-pointer"
             >
-              隠しネットワーク (Hidden SSID)
+              {t('form.hiddenLabel')}
             </label>
           </div>
         </div>
@@ -240,14 +241,14 @@ export default function WifiForm() {
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                   </svg>
-                  コピー完了
+                  {t('form.copyDone')}
                 </>
               ) : (
                 <>
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
-                  文字列をコピー
+                  {t('form.copyText')}
                 </>
               )}
             </button>
@@ -261,7 +262,7 @@ export default function WifiForm() {
               <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
               </svg>
-              QRコードをダウンロード
+              {t('form.downloadQr')}
             </button>
           </div>
         )}

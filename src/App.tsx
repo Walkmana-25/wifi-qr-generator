@@ -1,6 +1,37 @@
+import { useEffect } from 'react';
 import WifiForm from './components/WifiForm';
+import { useTranslation } from 'react-i18next';
+
+function normalizeLanguage(lang: string): 'ja' | 'en' {
+  return lang.startsWith('en') ? 'en' : 'ja';
+}
 
 function App() {
+  const { t, i18n } = useTranslation();
+
+  useEffect(() => {
+    const preferredLanguage = localStorage.getItem('wifi-qr-lang') ?? navigator.language.slice(0, 2);
+    const lang = normalizeLanguage(preferredLanguage);
+    if (i18n.language !== lang) {
+      void i18n.changeLanguage(lang);
+    }
+    document.documentElement.lang = lang;
+    // Run once after initial hydration to avoid SSR/SSG mismatch
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const lang = normalizeLanguage(i18n.language);
+    document.documentElement.lang = lang;
+    if (localStorage.getItem('wifi-qr-lang') !== lang) {
+      localStorage.setItem('wifi-qr-lang', lang);
+    }
+  }, [i18n.language]);
+
+  const handleLanguageChange = (lang: 'ja' | 'en') => {
+    void i18n.changeLanguage(lang);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50 dark:from-gray-950 dark:to-slate-900 flex flex-col">
       {/* Header */}
@@ -12,12 +43,37 @@ function App() {
             </svg>
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
-            Wi-Fi QRコードジェネレーター
+            {t('app.title')}
           </h1>
         </div>
         <p className="text-gray-500 dark:text-gray-400 text-sm">
-          ネットワーク情報を入力してQRコードを生成 — 完全オフライン・デバイス上で処理
+          {t('app.subtitle')}
         </p>
+        <div className="mt-4 inline-flex items-center gap-2 text-sm">
+          <span className="text-gray-500 dark:text-gray-400">{t('app.languageLabel')}:</span>
+          <button
+            type="button"
+            onClick={() => handleLanguageChange('ja')}
+            className={`px-2 py-1 rounded-md border transition ${
+              i18n.language.startsWith('ja')
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-700'
+            }`}
+          >
+            {t('app.languageJa')}
+          </button>
+          <button
+            type="button"
+            onClick={() => handleLanguageChange('en')}
+            className={`px-2 py-1 rounded-md border transition ${
+              i18n.language.startsWith('en')
+                ? 'bg-blue-600 text-white border-blue-600'
+                : 'bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-700'
+            }`}
+          >
+            {t('app.languageEn')}
+          </button>
+        </div>
       </header>
 
       {/* Main */}
@@ -27,7 +83,7 @@ function App() {
 
       {/* Footer */}
       <footer className="py-4 text-center text-xs text-gray-400 dark:text-gray-600">
-        <p>すべての処理はお使いのデバイス上で完結します。パスワードは外部に送信されません。</p>
+        <p>{t('app.footer')}</p>
       </footer>
     </div>
   );

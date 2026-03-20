@@ -12,6 +12,8 @@ React + Vite + TypeScript + Tailwind CSS で構築されており、入力した
 - ✅ Wi-Fi 文字列をクリップボードにコピー
 - ✅ ライト / ダークモード対応
 - ✅ 完全オフライン・オンデバイス処理
+- ✅ 日本語 / English の i18n 対応
+- ✅ SSG（ビルド時プリレンダリング）対応
 
 ## 開発
 
@@ -29,7 +31,7 @@ make test
 make build
 ```
 
-すべての開発コマンドは `make help` で確認できます。
+すべての開発コマンドは `make help` で確認できます。`npm run build` 実行時は Vite ビルド後に SSG を実行し、`dist/index.html` に初期HTMLをプリレンダリングします。
 
 ## Wi-Fi QR コードの形式
 
