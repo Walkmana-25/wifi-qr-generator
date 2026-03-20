@@ -131,7 +131,7 @@ describe('generateWifiQrDataUrl', () => {
     lineCap: string;
     lastFillText: MockFillText;
     beginPath: () => void;
-    arc: () => void;
+    arc: (x: number, y: number, r: number, startAngle: number, endAngle: number) => void;
     fill: () => void;
     fillRect: (x: number, y: number, w: number, h: number) => void;
     stroke: () => void;
