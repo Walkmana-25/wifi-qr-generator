@@ -237,8 +237,8 @@ describe('generateWifiQrDataUrl', () => {
     expect(finalCanvas.context.lastFillText?.text).toBe('SSID: Cafe_Wifi');
   });
 
-  it('draws wifi arcs in lower half of the icon', async () => {
-    const arcCalls: Array<{ startAngle: number; endAngle: number }> = [];
+  it('draws wifi arcs in lower half of the icon and keeps icon visually centered', async () => {
+    const arcCalls: Array<{ x: number; y: number; r: number; startAngle: number; endAngle: number }> = [];
 
     vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
       if (tagName === 'canvas') {
@@ -250,7 +250,7 @@ describe('generateWifiQrDataUrl', () => {
           startAngle: number,
           endAngle: number,
         ) => {
-          arcCalls.push({ startAngle, endAngle });
+          arcCalls.push({ x: _x, y: _y, r: _r, startAngle, endAngle });
         };
         return canvas as unknown as HTMLCanvasElement;
       }
@@ -274,5 +274,9 @@ describe('generateWifiQrDataUrl', () => {
         startAngle === Math.PI * 1.25 && endAngle === Math.PI * 1.75,
     );
     expect(wifiArcCalls).toHaveLength(3);
+    wifiArcCalls.forEach((call) => {
+      expect(call.x).toBe(100);
+      expect(call.y).toBeCloseTo(104.4, 4);
+    });
   });
 });

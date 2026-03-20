@@ -99,6 +99,7 @@ export async function generateWifiQrDataUrl(config: WifiConfig): Promise<string>
   const centerX = qrCanvas.width / 2;
   const centerY = qrCanvas.height / 2;
   const radius = qrCanvas.width * 0.11;
+  const iconCenterY = centerY + radius * 0.2;
 
   // White circle backdrop to keep the code scannable
   ctx.fillStyle = '#ffffff';
@@ -113,13 +114,13 @@ export async function generateWifiQrDataUrl(config: WifiConfig): Promise<string>
   const arcAngles = [Math.PI * 1.25, Math.PI * 1.75];
   [radius * 0.25, radius * 0.55, radius * 0.85].forEach((r) => {
     ctx.beginPath();
-    ctx.arc(centerX, centerY, r, arcAngles[0], arcAngles[1]);
+    ctx.arc(centerX, iconCenterY, r, arcAngles[0], arcAngles[1]);
     ctx.stroke();
   });
 
   ctx.beginPath();
   ctx.fillStyle = '#1f2937';
-  ctx.arc(centerX, centerY, radius * 0.15, 0, Math.PI * 2);
+  ctx.arc(centerX, iconCenterY + radius * 0.18, radius * 0.15, 0, Math.PI * 2);
   ctx.fill();
 
   // Label under the QR
