@@ -8,11 +8,12 @@
     "dev": "vite",
     "build": "tsc -b && vite build && npm run ssg",
     "lint": "eslint .",
-    "preview": "vite preview",
+    "preview": "npm run build && wrangler dev",
     "ssg": "tsx --tsconfig tsconfig.ssg.json scripts/ssg.tsx",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "i18next": "^25.8.20",
@@ -22,6 +23,7 @@
     "react-i18next": "^16.5.8"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.30.0",
     "@eslint/js": "^9.39.4",
     "@tailwindcss/vite": "^4.2.2",
     "@testing-library/jest-dom": "^6.9.1",
@@ -42,6 +44,7 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.57.0",
     "vite": "^8.0.1",
-    "vitest": "^4.1.0"
+    "vitest": "^4.1.0",
+    "wrangler": "^4.76.0"
   }
 }
