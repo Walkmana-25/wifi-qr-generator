@@ -123,18 +123,11 @@ describe('generateWifiQrDataUrl', () => {
 
   interface MockContext {
     fillStyle: string;
-    strokeStyle: string;
-    lineWidth: number;
     textAlign: string;
     textBaseline: string;
     font: string;
-    lineCap: string;
     lastFillText: MockFillText;
-    beginPath: () => void;
-    arc: () => void;
-    fill: () => void;
     fillRect: (x: number, y: number, w: number, h: number) => void;
-    stroke: () => void;
     drawImage: (image: unknown, dx: number, dy: number) => void;
     measureText: (text: string) => { width: number; actualBoundingBoxAscent: number; actualBoundingBoxDescent: number };
     fillText: (text: string, x: number, y: number) => void;
@@ -152,18 +145,11 @@ describe('generateWifiQrDataUrl', () => {
   function createMockCanvas() {
     const ctx: MockContext = {
       fillStyle: '',
-      strokeStyle: '',
-      lineWidth: 0,
       textAlign: '',
       textBaseline: '',
       font: '',
-      lineCap: '',
       lastFillText: null,
-      beginPath: () => {},
-      arc: () => {},
-      fill: () => {},
       fillRect: () => {},
-      stroke: () => {},
       drawImage: () => {},
       measureText: (text: string) => {
         const sizeMatch = /([0-9]+)px/.exec(ctx.font);
@@ -198,7 +184,7 @@ describe('generateWifiQrDataUrl', () => {
     vi.restoreAllMocks();
   });
 
-  it('draws QR with center icon and SSID label area', async () => {
+  it('draws QR and keeps only SSID label below the QR', async () => {
     const createdCanvases: MockCanvas[] = [];
 
     vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
@@ -235,5 +221,37 @@ describe('generateWifiQrDataUrl', () => {
     expect(finalCanvas.lastToDataUrlSize.height).toBeGreaterThan(200);
 
     expect(finalCanvas.context.lastFillText?.text).toBe('SSID: Cafe_Wifi');
+  });
+
+  it('does not draw center wifi icon arcs', async () => {
+    const arcSpy = vi.fn();
+
+    vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
+      if (tagName === 'canvas') {
+        const { canvas } = createMockCanvas();
+        return {
+          ...canvas,
+          getContext: () => ({
+            ...canvas.context,
+            arc: arcSpy,
+          }),
+        } as unknown as HTMLCanvasElement;
+      }
+      return originalCreateElement(tagName) as HTMLElement;
+    });
+
+    vi.spyOn(QRCode, 'toCanvas').mockImplementation(async (canvas: MockCanvas) => {
+      canvas.width = 200;
+      canvas.height = 200;
+    });
+
+    await generateWifiQrDataUrl({
+      ssid: 'Cafe_Wifi',
+      password: 'pass12345',
+      security: 'WPA',
+      hidden: false,
+    });
+
+    expect(arcSpy).not.toHaveBeenCalled();
   });
 });
