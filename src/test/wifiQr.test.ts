@@ -237,7 +237,7 @@ describe('generateWifiQrDataUrl', () => {
     expect(finalCanvas.context.lastFillText?.text).toBe('SSID: Cafe_Wifi');
   });
 
-  it('draws wifi arcs in lower half of the icon and keeps icon visually centered', async () => {
+  it('draws wifi arcs in lower half of the icon and shifts icon lower in the center badge', async () => {
     const arcCalls: Array<{ x: number; y: number; r: number; startAngle: number; endAngle: number }> = [];
 
     vi.spyOn(document, 'createElement').mockImplementation((tagName: string) => {
@@ -276,7 +276,7 @@ describe('generateWifiQrDataUrl', () => {
     expect(wifiArcCalls).toHaveLength(3);
     const qrSize = 200;
     const expectedCenterX = qrSize / 2;
-    const expectedIconCenterY = qrSize / 2 + (qrSize * 0.11) * 0.2;
+    const expectedIconCenterY = qrSize / 2 + (qrSize * 0.11) * 0.34;
     wifiArcCalls.forEach((call) => {
       expect(call.x).toBe(expectedCenterX);
       expect(call.y).toBeCloseTo(expectedIconCenterY, 4);
