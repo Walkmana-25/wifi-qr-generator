@@ -95,34 +95,6 @@ export async function generateWifiQrDataUrl(config: WifiConfig): Promise<string>
   // Draw the QR code
   ctx.drawImage(qrCanvas, 0, 0);
 
-  // Center WiFi icon overlay (simple arcs + dot)
-  const centerX = qrCanvas.width / 2;
-  const centerY = qrCanvas.height / 2;
-  const radius = qrCanvas.width * 0.11;
-  const iconCenterY = centerY + radius * 0.34;
-
-  // White circle backdrop to keep the code scannable
-  ctx.fillStyle = '#ffffff';
-  ctx.beginPath();
-  ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
-  ctx.fill();
-
-  ctx.strokeStyle = '#1f2937';
-  ctx.lineWidth = 2;
-  ctx.lineCap = 'round';
-
-  const arcAngles = [Math.PI * 1.25, Math.PI * 1.75];
-  [radius * 0.28, radius * 0.56, radius * 0.84].forEach((r) => {
-    ctx.beginPath();
-    ctx.arc(centerX, iconCenterY, r, arcAngles[0], arcAngles[1]);
-    ctx.stroke();
-  });
-
-  ctx.beginPath();
-  ctx.fillStyle = '#1f2937';
-  ctx.arc(centerX, iconCenterY + radius * 0.34, radius * 0.14, 0, Math.PI * 2);
-  ctx.fill();
-
   // Label under the QR
   ctx.fillStyle = '#111827';
   ctx.textAlign = 'center';
