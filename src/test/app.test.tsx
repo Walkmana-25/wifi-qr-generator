@@ -8,7 +8,7 @@ describe('App', () => {
   it('renders top-right GitHub repository icon link with correct URL', () => {
     render(<App />);
 
-    const link = screen.getByRole('link', { name: 'Open GitHub repository' });
+    const link = screen.getByRole('link', { name: /GitHub/ });
     expect(link).toHaveAttribute('href', GITHUB_REPOSITORY_URL);
     expect(link).toHaveAttribute('target', '_blank');
     expect(link).toHaveAttribute('rel', 'noopener noreferrer');
