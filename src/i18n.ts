@@ -4,16 +4,16 @@ import { initReactI18next } from 'react-i18next';
 const resources = {
   ja: {
     translation: {
-      app: {
-        title: 'Wi-Fi QRコードジェネレーター',
-        subtitle: 'ネットワーク情報を入力してQRコードを生成 — 完全オフライン・デバイス上で処理',
-        footer:
-          'すべての処理はお使いのデバイス上で完結します。パスワードは外部に送信されません。',
-        viewSourceOnGithub: 'View Source On GitHub',
-        languageLabel: '言語',
-        languageJa: '日本語',
-        languageEn: 'English',
-      },
+        app: {
+          title: 'Wi-Fi QRコードジェネレーター',
+          subtitle: 'ネットワーク情報を入力してQRコードを生成 — 完全オフライン・デバイス上で処理',
+          footer:
+            'すべての処理はお使いのデバイス上で完結します。パスワードは外部に送信されません。',
+          openGithubRepository: 'GitHub リポジトリを開く',
+          languageLabel: '言語',
+          languageJa: '日本語',
+          languageEn: 'English',
+        },
       form: {
         heading: 'ネットワーク情報を入力',
         ssidLabel: 'ネットワーク名 (SSID)',
@@ -42,16 +42,16 @@ const resources = {
   },
   en: {
     translation: {
-      app: {
-        title: 'Wi-Fi QR Code Generator',
-        subtitle:
-          'Enter network info to generate a QR code — fully offline, processed on your device',
-        footer: 'Everything is processed on your device. Your password is never sent externally.',
-        viewSourceOnGithub: 'View Source On GitHub',
-        languageLabel: 'Language',
-        languageJa: '日本語',
-        languageEn: 'English',
-      },
+        app: {
+          title: 'Wi-Fi QR Code Generator',
+          subtitle:
+            'Enter network info to generate a QR code — fully offline, processed on your device',
+          footer: 'Everything is processed on your device. Your password is never sent externally.',
+          openGithubRepository: 'Open GitHub repository',
+          languageLabel: 'Language',
+          languageJa: '日本語',
+          languageEn: 'English',
+        },
       form: {
         heading: 'Enter network information',
         ssidLabel: 'Network name (SSID)',
