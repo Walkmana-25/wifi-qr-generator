@@ -105,7 +105,7 @@ export default function WifiForm() {
     <div className="flex flex-col lg:flex-row gap-8 w-full max-w-4xl mx-auto">
       {/* Form */}
       <div className="flex-1 bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 border border-gray-200 dark:border-gray-700">
-        <h2 className="text-lg sm:text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">
+        <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-6">
           {t('form.heading')}
         </h2>
 
@@ -232,7 +232,7 @@ export default function WifiForm() {
             <button
               onClick={handleCopy}
               disabled={isGenerating}
-              className="min-w-[9rem] flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
                 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300
                 hover:bg-gray-200 dark:hover:bg-gray-700 transition
                 disabled:opacity-50 disabled:cursor-not-allowed"
@@ -256,7 +256,7 @@ export default function WifiForm() {
             <button
               onClick={handleDownload}
               disabled={isGenerating}
-              className="min-w-[12rem] flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
                 bg-blue-600 text-white hover:bg-blue-700 transition
                 disabled:opacity-50 disabled:cursor-not-allowed"
             >

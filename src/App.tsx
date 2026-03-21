@@ -64,7 +64,7 @@ function App() {
             {t('app.title')}
           </h1>
         </div>
-        <p className="text-gray-500 dark:text-gray-400 text-sm min-h-[2.5rem]">
+        <p className="text-gray-500 dark:text-gray-400 text-sm">
           {t('app.subtitle')}
         </p>
         <div className="mt-4 inline-flex items-center gap-2 text-sm">
@@ -72,7 +72,7 @@ function App() {
           <button
             type="button"
             onClick={() => handleLanguageChange('ja')}
-            className={`min-w-[5rem] px-2 py-1 rounded-md border transition ${
+            className={`px-2 py-1 rounded-md border transition ${
               i18n.language.startsWith('ja')
                 ? 'bg-blue-600 text-white border-blue-600'
                 : 'bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-700'
@@ -83,7 +83,7 @@ function App() {
           <button
             type="button"
             onClick={() => handleLanguageChange('en')}
-            className={`min-w-[5rem] px-2 py-1 rounded-md border transition ${
+            className={`px-2 py-1 rounded-md border transition ${
               i18n.language.startsWith('en')
                 ? 'bg-blue-600 text-white border-blue-600'
                 : 'bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-700'
@@ -101,7 +101,7 @@ function App() {
 
       {/* Footer */}
       <footer className="py-4 text-center text-xs text-gray-400 dark:text-gray-600">
-        <p className="min-h-[2rem]">{t('app.footer')}</p>
+        <p>{t('app.footer')}</p>
       </footer>
     </div>
   );
